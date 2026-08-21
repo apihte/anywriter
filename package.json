@@ -1,0 +1,24 @@
+{
+  "name": "anywriter",
+  "version": "0.1.0",
+  "type": "module",
+  "description": "AnyWriter — evidence-traced novel distillation and writing tools for OpenCode",
+  "main": "adapters/opencode/opencode.plugin.ts",
+  "exports": {
+    ".": "./adapters/opencode/opencode.plugin.ts"
+  },
+  "keywords": [
+    "opencode-plugin",
+    "novel",
+    "writing",
+    "distillation"
+  ],
+  "files": [
+    "adapters/",
+    "locales/",
+    "shared/"
+  ],
+  "publishConfig": {
+    "access": "public"
+  }
+}

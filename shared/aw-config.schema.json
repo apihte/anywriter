@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "aw-config.schema.json",
+  "title": "AnyWriter Project Configuration",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "version": {
+      "const": 1
+    },
+    "language": {
+      "enum": ["zh", "en"],
+      "default": "zh"
+    },
+    "system_prompt": {
+      "type": "string"
+    }
+  },
+  "required": ["version"],
+  "default": {
+    "version": 1,
+    "language": "zh",
+    "system_prompt": ""
+  }
+}

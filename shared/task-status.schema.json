@@ -1,0 +1,292 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "task-status.schema.json",
+  "title": "Novel Creative Task Status",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "task_id",
+    "state",
+    "stale",
+    "knowledge_version",
+    "active_artifacts",
+    "generation_unit",
+    "approvals",
+    "next_actions",
+    "updated_at"
+  ],
+  "properties": {
+    "$schema": {
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "1.0"
+    },
+    "task_id": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9-]*$"
+    },
+    "state": {
+      "enum": [
+        "brief_pending_approval",
+        "outline_pending_approval",
+        "ready_to_write",
+        "drafting",
+        "review_pending_approval",
+        "revising",
+        "ready_to_finalize",
+        "finalized"
+      ]
+    },
+    "stale": {
+      "type": "boolean"
+    },
+    "knowledge_version": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "active_artifacts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["brief", "impact_analysis", "outline", "draft", "review", "final"],
+      "properties": {
+        "brief": {"type": ["string", "null"]},
+        "impact_analysis": {"type": ["string", "null"]},
+        "outline": {"type": ["string", "null"]},
+        "draft": {"type": ["string", "null"]},
+        "review": {"type": ["string", "null"]},
+        "final": {"type": ["string", "null"]}
+      }
+    },
+    "generation_unit": {
+      "type": ["string", "null"]
+    },
+    "approvals": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["artifact", "decision", "recorded_at"],
+        "properties": {
+          "artifact": {"type": "string"},
+          "decision": {"enum": ["approved", "rejected", "changes_requested"]},
+          "recorded_at": {"type": "string", "format": "date-time"},
+          "note": {"type": "string"}
+        }
+      }
+    },
+    "next_actions": {
+      "type": "array",
+      "items": {"type": "string"}
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {"state": {"const": "brief_pending_approval"}},
+        "required": ["state"]
+      },
+      "then": {
+        "properties": {
+          "active_artifacts": {
+            "type": "object",
+            "properties": {
+              "brief": {"type": "string", "minLength": 1},
+              "impact_analysis": {"type": "string", "minLength": 1}
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {"state": {"const": "outline_pending_approval"}},
+        "required": ["state"]
+      },
+      "then": {
+        "allOf": [
+          {
+            "properties": {
+              "active_artifacts": {
+                "type": "object",
+                "properties": {
+                  "brief": {"type": "string", "minLength": 1},
+                  "impact_analysis": {"type": "string", "minLength": 1},
+                  "outline": {"type": "string", "minLength": 1}
+                }
+              }
+            }
+          },
+          {
+            "properties": {
+              "approvals": {
+                "type": "array",
+                "contains": {
+                  "type": "object",
+                  "properties": {
+                    "artifact": {"type": "string", "pattern": "/brief-v[1-9][0-9]*\\.md$"},
+                    "decision": {"const": "approved"}
+                  },
+                  "required": ["artifact", "decision"]
+                },
+                "minContains": 1
+              }
+            }
+          },
+          {
+            "properties": {
+              "approvals": {
+                "type": "array",
+                "contains": {
+                  "type": "object",
+                  "properties": {
+                    "artifact": {"type": "string", "pattern": "/impact-analysis-v[1-9][0-9]*\\.md$"},
+                    "decision": {"const": "approved"}
+                  },
+                  "required": ["artifact", "decision"]
+                },
+                "minContains": 1
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "state": {
+            "enum": ["ready_to_write", "drafting", "review_pending_approval", "revising", "ready_to_finalize", "finalized"]
+          }
+        },
+        "required": ["state"]
+      },
+      "then": {
+        "allOf": [
+          {
+            "properties": {
+              "active_artifacts": {
+                "type": "object",
+                "properties": {
+                  "brief": {"type": "string", "minLength": 1},
+                  "impact_analysis": {"type": "string", "minLength": 1},
+                  "outline": {"type": "string", "minLength": 1}
+                }
+              }
+            }
+          },
+          {
+            "properties": {
+              "approvals": {
+                "type": "array",
+                "contains": {
+                  "type": "object",
+                  "properties": {
+                    "artifact": {"type": "string", "pattern": "/brief-v[1-9][0-9]*\\.md$"},
+                    "decision": {"const": "approved"}
+                  },
+                  "required": ["artifact", "decision"]
+                },
+                "minContains": 1
+              }
+            }
+          },
+          {
+            "properties": {
+              "approvals": {
+                "type": "array",
+                "contains": {
+                  "type": "object",
+                  "properties": {
+                    "artifact": {"type": "string", "pattern": "/impact-analysis-v[1-9][0-9]*\\.md$"},
+                    "decision": {"const": "approved"}
+                  },
+                  "required": ["artifact", "decision"]
+                },
+                "minContains": 1
+              }
+            }
+          },
+          {
+            "properties": {
+              "approvals": {
+                "type": "array",
+                "contains": {
+                  "type": "object",
+                  "properties": {
+                    "artifact": {"type": "string", "pattern": "/outline-v[1-9][0-9]*\\.md$"},
+                    "decision": {"const": "approved"}
+                  },
+                  "required": ["artifact", "decision"]
+                },
+                "minContains": 1
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {"state": {"enum": ["review_pending_approval", "revising"]}},
+        "required": ["state"]
+      },
+      "then": {
+        "properties": {
+          "active_artifacts": {
+            "type": "object",
+            "properties": {
+              "draft": {"type": "string", "minLength": 1},
+              "review": {"type": "string", "minLength": 1}
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {"state": {"enum": ["ready_to_finalize", "finalized"]}},
+        "required": ["state"]
+      },
+      "then": {
+        "properties": {
+          "active_artifacts": {
+            "type": "object",
+            "properties": {"draft": {"type": "string", "minLength": 1}}
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {"state": {"const": "finalized"}},
+        "required": ["state"]
+      },
+      "then": {
+        "properties": {
+          "active_artifacts": {
+            "type": "object",
+            "properties": {"final": {"type": "string", "minLength": 1}}
+          },
+          "approvals": {
+            "type": "array",
+            "contains": {
+              "type": "object",
+              "properties": {
+                "artifact": {"type": "string", "pattern": "/final/.+"},
+                "decision": {"const": "approved"}
+              },
+              "required": ["artifact", "decision"]
+            },
+            "minContains": 1
+          }
+        }
+      }
+    }
+  ]
+}

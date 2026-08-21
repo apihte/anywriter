@@ -1,0 +1,179 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "knowledge-status.schema.json",
+  "title": "Novel Knowledge Status",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "state",
+    "candidate_version",
+    "candidate_path",
+    "approved_version",
+    "approved_path",
+    "source_files",
+    "coverage",
+    "open_question_count",
+    "approvals",
+    "updated_at"
+  ],
+  "properties": {
+    "$schema": {
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "1.0"
+    },
+    "state": {
+      "enum": [
+        "not_distilled",
+        "knowledge_pending_approval",
+        "knowledge_approved",
+        "stale"
+      ]
+    },
+    "candidate_version": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "candidate_path": {
+      "type": ["string", "null"]
+    },
+    "approved_version": {
+      "type": ["integer", "null"],
+      "minimum": 1
+    },
+    "approved_path": {
+      "type": ["string", "null"]
+    },
+    "source_files": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["path", "bytes", "sha256"],
+        "properties": {
+          "path": {
+            "type": "string",
+            "minLength": 1
+          },
+          "bytes": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "sha256": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          }
+        }
+      }
+    },
+    "coverage": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["source", "range", "status"],
+        "properties": {
+          "source": {
+            "type": "string"
+          },
+          "range": {
+            "type": "string"
+          },
+          "status": {
+            "enum": ["pending", "covered", "excluded"]
+          }
+        }
+      }
+    },
+    "open_question_count": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "approvals": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["artifact", "version", "decision", "recorded_at"],
+        "properties": {
+          "artifact": {"type": "string"},
+          "version": {"type": "integer", "minimum": 1},
+          "decision": {"enum": ["approved", "rejected", "changes_requested"]},
+          "recorded_at": {"type": "string", "format": "date-time"},
+          "note": {"type": "string"}
+        }
+      }
+    },
+    "approved_at": {
+      "type": ["string", "null"],
+      "format": "date-time"
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {"state": {"const": "not_distilled"}},
+        "required": ["state"]
+      },
+      "then": {
+        "properties": {
+          "candidate_version": {"const": 0},
+          "candidate_path": {"type": "null"},
+          "approved_version": {"type": "null"},
+          "approved_path": {"type": "null"}
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {"state": {"const": "knowledge_pending_approval"}},
+        "required": ["state"]
+      },
+      "then": {
+        "properties": {
+          "candidate_version": {"type": "integer", "minimum": 1},
+          "candidate_path": {"type": "string", "minLength": 1}
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {"state": {"const": "knowledge_approved"}},
+        "required": ["state"]
+      },
+      "then": {
+        "properties": {
+          "candidate_version": {"type": "integer", "minimum": 1},
+          "candidate_path": {"type": "string", "minLength": 1},
+          "approved_version": {"type": "integer", "minimum": 1},
+          "approved_path": {"type": "string", "minLength": 1},
+          "coverage": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {"status": {"enum": ["covered", "excluded"]}}
+            }
+          },
+          "approvals": {
+            "type": "array",
+            "contains": {
+              "type": "object",
+              "properties": {
+                "artifact": {"type": "string", "pattern": "^files/knowledge/versions/v[1-9][0-9]*/?$"},
+                "decision": {"const": "approved"}
+              },
+              "required": ["artifact", "decision"]
+            },
+            "minContains": 1
+          }
+        }
+      }
+    }
+  ]
+}

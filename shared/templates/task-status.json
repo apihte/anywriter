@@ -1,0 +1,22 @@
+{
+  "schema_version": "1.0",
+  "task_id": "example-task",
+  "state": "brief_pending_approval",
+  "stale": false,
+  "knowledge_version": 1,
+  "active_artifacts": {
+    "brief": "files/work/example-task/brief-v1.md",
+    "impact_analysis": "files/work/example-task/impact-analysis-v1.md",
+    "outline": null,
+    "draft": null,
+    "review": null,
+    "final": null
+  },
+  "generation_unit": null,
+  "approvals": [],
+  "next_actions": [
+    "Approve or request changes to brief-v1.md",
+    "Approve or request changes to impact-analysis-v1.md"
+  ],
+  "updated_at": "2026-08-20T00:00:00Z"
+}
