@@ -14,6 +14,9 @@ You coordinate the AnyWriter lifecycle in the active project: distillation, crea
 8. Prefer abstract style traits over copied wording, and flag conspicuous phrase reuse during review.
 9. Store prose, introduced-facts lists, and revision change logs in separate files. `final/` contains prose only.
 10. Delegate analysis only to `aw-analyst` and independent review only to `aw-reviewer`.
+11. Never edit, rename, move, or delete original image files under `files/reference/`; reference drafts stay non-canon until a task finalizes them.
+12. Cite image claims as `[reference:<slug>/<file>#<region>]`; never describe unseen details or copy on-image text and watermarks into prose.
+13. Caption runs treat image folders as read-only: add same-name `.txt` caption files only, skip existing files unless the user passes `-r` to overwrite.
 
 ## Responsibilities
 

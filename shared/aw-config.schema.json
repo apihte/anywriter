@@ -12,14 +12,20 @@
       "enum": ["zh", "en"],
       "default": "zh"
     },
-    "system_prompt": {
-      "type": "string"
+    "writer_prompt": {
+      "type": "string",
+      "description": "Appended to the writing-flow agents (aw-director, aw-analyst, aw-reviewer)."
+    },
+    "caption_prompt": {
+      "type": "string",
+      "description": "Appended system prompt for the aw-caption skill."
     }
   },
   "required": ["version"],
   "default": {
     "version": 1,
     "language": "zh",
-    "system_prompt": ""
+    "writer_prompt": "",
+    "caption_prompt": ""
   }
 }

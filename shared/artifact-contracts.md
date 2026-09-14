@@ -13,6 +13,21 @@ The template router is `shared/templates/distillation-router.md`. It selects the
 
 Agents must resolve knowledge through `status.json`. They must not invent or rely on an unversioned knowledge alias.
 
+## Reference Artifacts
+
+`files/reference/<slug>/` contains:
+
+- Original user-uploaded images (immutable).
+- `status.json`: lifecycle state, image fingerprints, active reference version, approvals, linked task, and reference drafts. Must conform to `image-reference-status.schema.json` bundled with the plugin.
+- `image-ref-vN.md`: the approved visual reference sheet built with `shared/templates/image-reference.md`.
+- `drafts/`: optional non-canon image-referenced drafts and their facts sidecars.
+
+Reference drafts never enter canon directly; promote them through the task workflow and the approved knowledge promotion branch.
+
+## Caption Outputs
+
+`aw-caption` writes one UTF-8 caption file beside each source image (`<image>.txt`). Image folders are read-only, caption files are not versioned project artifacts, and existing caption files are skipped unless the user passes `-r`.
+
 ## Task Artifacts
 
 Each `files/work/<task-id>/` contains:
@@ -35,5 +50,6 @@ Approval freezes a version. Subsequent changes create `v2`, `v3`, and so on. Sta
 ## Evidence Rule
 
 - Source evidence: `[relative-file:Lstart-Lend]`.
+- Image evidence: `[reference:<slug>/<file>#<region>]`.
 - Approved derived knowledge: `[artifact-path#heading]`.
 - Approved final prose additions: `[artifact-path#heading]`.

@@ -34,6 +34,13 @@ not_distilled
 | `ready_to_finalize` | Continue with another unit | Versioned draft and introduced-facts list | `drafting` |
 | `ready_to_finalize` | Request another review cycle | Review report | `review_pending_approval` |
 
+## Image Reference Gate
+
+- `aw-byimage` extracts a region-cited reference sheet into `files/reference/<slug>/` and sets `pending_approval`.
+- Approval records the reference version and sets `approved`; image-referenced generation may then start.
+- A changed reference creates a new `image-ref-vN.md` and returns to `pending_approval`.
+- Reference drafts are non-canon and do not alter knowledge or task state.
+
 ## Invalidation
 
 - A source fingerprint mismatch sets knowledge state to `stale`; re-run distillation to produce a new candidate for approval.
