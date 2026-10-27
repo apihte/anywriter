@@ -1,6 +1,6 @@
 # AnyWriter Plugin
 
-AnyWriter 是一个面向小说蒸馏、改编、续写、审校和定稿的 OpenCode 插件。插件提供中英文双语资源、项目级系统提示词和 `aw-*` 命令。
+AnyWriter 是一个面向小说蒸馏、改编、续写、审校和定稿的 OpenCode 1、OpenCode 2 和 Pi 插件包。插件提供中英文双语资源、项目级系统提示词和 `aw-*` 命令。
 
 平台适配器统一放在 `adapters/`，共享资源位于根目录 `locales/` 和 `shared/`。
 
@@ -17,15 +17,39 @@ AnyWriter 是一个面向小说蒸馏、改编、续写、审校和定稿的 Ope
 
 ## 安装方式
 
-### npm
+### 默认入口（OpenCode 2，同时兼容 OpenCode 1）
 
-发布后，在 OpenCode 全局配置中加入：
+发布后，在 OpenCode 2 全局配置中加入：
+
+```jsonc
+{
+  "plugins": ["anywriter"]
+}
+```
+
+包的默认入口是 OpenCode 2 `Plugin.define` 实现，并包含 OpenCode 1 兼容的 `server` 入口。
+
+### OpenCode 1
+
+在 OpenCode 1 全局配置中加入：
 
 ```json
 {
   "plugin": ["anywriter"]
 }
 ```
+
+### OpenCode 2
+
+OpenCode 2 使用新的插件 API；在 `opencode.json(c)` 中配置：
+
+```jsonc
+{
+  "plugins": ["anywriter"]
+}
+```
+
+该包的 `./opencode2` 导出是独立的 V2 `Plugin.define` 入口；默认入口还提供兼容 OpenCode 1.18.29+ 的 `server` 实现。
 
 ### GitHub 源码
 
@@ -44,6 +68,18 @@ git clone <repository-url> ~/.config/opencode/plugins/anywriter
 ```
 
 安装或更新插件后重启 OpenCode。
+
+### Pi
+
+AnyWriter 同时是 Pi package，可通过 npm 或 Git 安装：
+
+```bash
+pi install npm:anywriter
+# 或在仓库目录测试
+pi -e .
+```
+
+Pi 会自动加载包中的 `adapters/pi/index.ts`、双语 `aw-*` Skills 和 slash commands。命令使用 `/aw-init`、`/aw-distill` 等；修改 `.aw/config.json` 后执行 `/aw-reload` 或重启 Pi。
 
 ## 项目使用
 

@@ -2,13 +2,19 @@
   "name": "anywriter",
   "version": "0.1.0",
   "type": "module",
-  "description": "AnyWriter — evidence-traced novel distillation and writing tools for OpenCode",
-  "main": "adapters/opencode/opencode.plugin.ts",
+  "description": "AnyWriter — evidence-traced novel distillation and writing tools for OpenCode and Pi",
+  "main": "adapters/opencode2/index.ts",
   "exports": {
-    ".": "./adapters/opencode/opencode.plugin.ts"
+    ".": "./adapters/opencode2/index.ts",
+    "./opencode": "./adapters/opencode/opencode.plugin.ts",
+    "./opencode2": "./adapters/opencode2/index.ts",
+    "./pi": "./adapters/pi/index.ts"
   },
   "keywords": [
     "opencode-plugin",
+    "opencode-v2-plugin",
+    "pi-package",
+    "pi-extension",
     "novel",
     "writing",
     "distillation"
@@ -18,6 +24,15 @@
     "locales/",
     "shared/"
   ],
+  "peerDependencies": {
+    "@earendil-works/pi-ai": "*",
+    "@earendil-works/pi-coding-agent": "*",
+    "@opencode/plugin": "*"
+  },
+  "pi": {
+    "extensions": ["./adapters/pi/index.ts"],
+    "skills": []
+  },
   "publishConfig": {
     "access": "public"
   }
